@@ -18,16 +18,16 @@ int main(int argc, char **argv) {
         
         Engine eng = Engine(screencfg);
         eng.init();
-        int blueIndex = eng.loadImage("../blue.png");
-        int greenIndex = eng.loadImage("../green.png");
-        int redIndex = eng.loadImage("../red.png");
-        int violetIndex = eng.loadImage("../violet.png");
-        int yellowIndex = eng.loadImage("../yellow.png");
+        int blueIndex = eng.loadImage("../img/blue.png");
+        int greenIndex = eng.loadImage("../img/green.png");
+        int redIndex = eng.loadImage("../img/red.png");
+        int pinkIndex = eng.loadImage("../img/pink.png");
+        int yellowIndex = eng.loadImage("../img/yellow.png");
         Playground* playground = new Playground(&eng, bubblcount, bubblecolumn, bubblerow, bubblesize);
         playground->registerColor(0, blueIndex);
         playground->registerColor(1, greenIndex);
         playground->registerColor(2, redIndex);
-        playground->registerColor(3, violetIndex);
+        playground->registerColor(3, pinkIndex);
         playground->registerColor(4, yellowIndex);
         eng.addWindowEventHandler(playground);
         eng.addMouseEventHandler(playground);

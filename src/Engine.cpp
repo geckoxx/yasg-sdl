@@ -22,6 +22,7 @@
 #include "const.h"
 
 #include <math.h>
+#include <iostream>
 
 using namespace yasg;
 
@@ -57,19 +58,20 @@ void Engine::init()
     if( TTF_Init() == -1 )
         throw YasgException("True Type Font Initation failed!");
     SDL_WM_SetCaption(WINDOWTITLE, nullptr);
-    glClearColor( 1.f, 1.f, 1.f, 1.f );
-    glClear( GL_COLOR_BUFFER_BIT );
+    //glClear( GL_COLOR_BUFFER_BIT );
 
-    //glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-    //glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
     glEnable( GL_TEXTURE_2D ); // Need this to display a texture
-    glDisable(GL_DEPTH_TEST);
+    //glDisable(GL_DEPTH_TEST);
+    //glClearColor( 0, 0, 0, 0 );
+    glClear( GL_COLOR_BUFFER_BIT );
     glViewport( 0, 0, scrcfg.width, scrcfg.height );
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
     glOrtho( 0, scrcfg.width, scrcfg.height, 0, -1, 1 );
     glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
+    //glLoadIdentity();
 
     inited = true;
 }
@@ -170,14 +172,15 @@ GLuint Engine::getTextTexture(std::string text, int font, SDL_Color color)
     GLuint texture;
     
     /* Use SDL_TTF to render our text */
-    tmpSurface = TTF_RenderText_Blended(fonts[font], text.c_str(), color);
+    //tmpSurface = TTF_RenderText_Blended(fonts[font], text.c_str(), color);
+    //tmpSurface = TTF_RenderText_Solid(fonts[font], text.c_str(), color);
+    tmpSurface = TTF_RenderText_Shaded(fonts[font], text.c_str(), color, {0,0,0});
     
     /* Convert the rendered text to a known format */
     w = round(pow(2,ceil(log(tmpSurface->w) / log(2))));
     h = round(pow(2,ceil(log(tmpSurface->h) / log(2))));
     
-    optSurface = SDL_CreateRGBSurface(0, w, h, 32, 
-            0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+    optSurface = SDL_CreateRGBSurface(0, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 
     SDL_BlitSurface(tmpSurface, 0, optSurface, 0);
     
@@ -202,16 +205,16 @@ void Engine::renderTexture(int x, int y, int width, int height, GLuint texture)
     glBegin( GL_QUADS );
 
     glTexCoord2i( 0, 0 );
-    glVertex2f( x, y);
+    glVertex3f( x, y, 0);
 
     glTexCoord2i( 1, 0 );
-    glVertex2f( x + width, y);
+    glVertex3f( x + width, y, 0);
 
     glTexCoord2i( 1, 1 );
-    glVertex2f( x + width, y + height);
+    glVertex3f( x + width, y + height, 0);
 
     glTexCoord2i( 0, 1 );
-    glVertex2f( x, y + height);
+    glVertex3f( x, y + height, 0);
     glEnd();
 }
 
@@ -268,7 +271,7 @@ bool Engine::update()
             glLoadIdentity();
             glOrtho( 0, scrcfg.width, scrcfg.height, 0, -1, 1 );
             glMatrixMode( GL_MODELVIEW );
-            glLoadIdentity();
+            //glLoadIdentity();
             if( screen == nullptr )
                 throw YasgException(sdlScreenFail);
             for(int i = 0; i < windowEventHandler.size(); i++)
@@ -282,7 +285,7 @@ void Engine::render()
 {
     //if( SDL_Flip( screen ) == -1 )
     //throw YasgException(sdlScreenFlipFail);
-    glClearColor( 1.f, 1.f, 1.f, 1.f );
+    glClearColor( 0.5f, 0.5f, 0.5f, 0.f );
     glClear( GL_COLOR_BUFFER_BIT );
     //renderBackground();
     for(int i = 0; i < renderFunctions.size(); i++)
@@ -293,15 +296,16 @@ void Engine::render()
 
 void Engine::renderBackground()
 {
-
+    
+    glColor3f( 1.0f, 0.0f, 0.0f);
     glBegin( GL_QUADS );
-    glColor3f( 1.0f, 1.0f, 1.0f);
-    glVertex2f( 0, 0 );
-    glColor3f( 1.0f, 1.0f, 1.0f);
-    glVertex2f( scrcfg.width, 0 );
-    glColor3f( 1.0f, 1.0f, 1.0f);
-    glVertex2f( scrcfg.width, scrcfg.height );
-    glColor3f( 1.0f, 1.0f, 1.0f);
-    glVertex2f( 0, scrcfg.height );
+    //glColor3f( 0.0f, 0.0f, 0.0f);
+    glVertex3f( 0, 0, -1 );
+    //glColor3f( 0.0f, 0.0f, 0.0f);
+    glVertex3f( scrcfg.width, 0, -1 );
+    //glColor3f( 0.0f, 0.0f, 0.0f);
+    glVertex3f( scrcfg.width, scrcfg.height, -1 );
+    //glColor3f( 0.0f, 0.0f, 0.0f);
+    glVertex3f( 0, scrcfg.height, -1 );
     glEnd() ;
 }

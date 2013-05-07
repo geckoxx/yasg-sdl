@@ -4,7 +4,7 @@ project(yasg)
 
 SET(CMAKE_CXX_FLAGS "-std=c++0x")
 
-add_executable(yasg src/Playground.cpp src/Engine.cpp main.cpp)
+add_executable(yasg src/Button.cpp src/Playground.cpp src/Engine.cpp main.cpp)
 
 target_link_libraries(yasg SDL)
 target_link_libraries(yasg SDL_image)

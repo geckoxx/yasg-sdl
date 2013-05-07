@@ -19,13 +19,15 @@
 
 #include "Playground.h"
 #include <functional>
+#include <iterator>
+#include <iostream>
 
 using namespace yasg;
 
 Playground::Playground ( Engine* engine, int colorCount, int columns, int rows, int bubbleSize )
 {
     this->engine = engine;
-    font = engine->loadFont("../citycontrasts.ttf", 14);
+    font = engine->loadFont("../fonts/data-latin.ttf", 50);
     distribution = std::uniform_int_distribution<int>(0, colorCount - 1);
     colors = colorCount;
     colorIndeces = new int[colors];
@@ -84,7 +86,7 @@ void Playground::handleClick ( int x, int y )
     lastType = selectedType;
     lastBubbles = selectedBubbles;
     colorCounts[selectedType] -= selCount;
-    score = (selCount - 1) * (selCount - 1);
+    score += (selCount - 1) * (selCount - 1);
     for(int i = 0; i < selCount; i++)
         bubbles[selectedBubbles[i].x][selectedBubbles[i].y] = -1;
     refresh();
@@ -175,10 +177,11 @@ bool Playground::floodMoveCheck ( int column, int row, int type )
 
 void Playground::renderFunction()
 {
-    engine->renderText(0, bubbleSize * rows, (20 * (int)(score / 10)) + 20, buttomRowHeight, std::to_string(score), font, { 100, 100, 100 });
+    engine->renderText(0, bubbleSize * rows, strlen(std::to_string(score).c_str()) * 20, buttomRowHeight, std::to_string(score), font, { 100, 0, 0 });
     for(int x = 0; x < columns; x++)
         for(int y = 0; y < rows; y++)
-            engine->renderImage(x * bubbleSize, y * bubbleSize, bubbleSize, bubbleSize, colorIndeces[bubbles[x][y]]);
+            if(bubbles[x][y] != -1)
+                engine->renderImage(x * bubbleSize, y * bubbleSize, bubbleSize, bubbleSize, colorIndeces[bubbles[x][y]]);
 }
 
 void Playground::updateME(MouseEvent mouseEvent)

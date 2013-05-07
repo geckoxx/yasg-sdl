@@ -47,7 +47,7 @@ struct Coordinates {
 class Engine
 {
 private:
-    const GLuint videoModeFlags = SDL_OPENGL | SDL_RESIZABLE | SDL_DOUBLEBUF;
+    const GLuint videoModeFlags = SDL_OPENGL | SDL_RESIZABLE;
     bool inited;
     Screencfg scrcfg;
     SDL_Surface* screen; 
