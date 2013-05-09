@@ -39,6 +39,7 @@ private:
     SDL_Color color;
     
 public:
+    Button();
     Button(int x, int y, int width, int height, std::string text, int font, SDL_Color color);
     ~Button();
     void setX(int x);

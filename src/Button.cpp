@@ -21,6 +21,11 @@
 
 using namespace yasg;
 
+Button::Button()
+{
+
+}
+
 Button::Button(int x, int y, int width, int height, std::string text, int font, SDL_Color color)
 {
     this->x = x;

@@ -22,10 +22,12 @@
 
 #include <random>
 #include <vector>
+#include <map>
 
 #include "Engine.h"
 #include "MouseEvent.h"
 #include "WindowEvent.h"
+#include "Button.h"
 
 namespace yasg {
 
@@ -59,8 +61,12 @@ private:
     
     int lastType;
     std::vector<position> lastBubbles;
+    std::map<int, std::map<int, position>> prevPos;
+    int lastPoints;
     
     int font;
+    
+    Button backButton;
 
 public:
     Playground(Engine* engine, int colorCount, int columns, int rows, int bubbleSize);
