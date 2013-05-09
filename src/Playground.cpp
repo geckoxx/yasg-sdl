@@ -22,13 +22,16 @@
 #include <iterator>
 #include <iostream>
 #include <stdexcept>
+#include <cstdlib>
+#include <ctime>
 
 using namespace yasg;
 
-Playground::Playground ( Engine* engine, int colorCount, int columns, int rows, int bubbleSize )
+Playground::Playground ( Engine* engine, int colorCount, int columns, int rows, int bubbleSize, int font )
 {
     this->engine = engine;
-    font = engine->loadFont("../fonts/data-latin.ttf", 50);
+    this->font = font;
+    std::srand(std::time(0));
     distribution = std::uniform_int_distribution<int>(0, colorCount - 1);
     colors = colorCount;
     colorIndeces = new int[colors];
@@ -59,6 +62,7 @@ void Playground::registerColor ( int color, int surfaceIndex )
 
 void Playground::startNewGame()
 {
+    distribution = std::uniform_int_distribution<int>(0, colors - 1);
     score = 0;
     for(int i = 0; i < colors; i++)
         colorCounts[i] = 0;
@@ -128,7 +132,8 @@ void Playground::fillBubbles()
 
 void Playground::createBlock ( int column, int row )
 {
-    int typ = distribution(generator);
+    //int typ = distribution(generator);
+    int typ = std::rand() % colors; 
     colorCounts[typ]++;
     bubbles[column][row] = typ;
 }
@@ -208,7 +213,7 @@ bool Playground::floodMoveCheck ( int column, int row, int type )
     return floodMoveCheck(column + 1, row, bubbleType) || floodMoveCheck(column, row - 1, bubbleType);
 }
 
-void Playground::renderFunction()
+void Playground::render()
 {
     if(lastType != -1)
         backButton.render(engine);
@@ -220,11 +225,14 @@ void Playground::renderFunction()
                 engine->renderImage(x * bubbleSize, y * bubbleSize, bubbleSize, bubbleSize, colorIndeces[bubbles[x][y]]);
 }
 
-void Playground::updateME(MouseEvent mouseEvent)
+Gamestatus Playground::updateME(MouseEvent mouseEvent)
 {
     handleClick(mouseEvent.x, mouseEvent.y);
     if(backButton.clicked(mouseEvent))
         this->oneStepBack();
+    if(gameOver)
+        return PAUSED;
+    return RUNNING;
 }
 
 void Playground::updateWE(WindowEvent windowEvent)
@@ -232,5 +240,6 @@ void Playground::updateWE(WindowEvent windowEvent)
     int widthSize = windowEvent.w / columns;
     int heightSize = (windowEvent.h - buttomRowHeight) / rows;
     bubbleSize = (widthSize < heightSize) ? widthSize : heightSize;
+    backButton.setY(bubbleSize * rows);
 }
 

@@ -36,7 +36,11 @@ struct position {
     int y;
 };
 
-class Playground : public MouseEventHandler, public WindowEventHandler
+enum Gamestatus {
+    RUNNING, PAUSED, GAMEOVER
+};
+
+class Playground : public WindowEventHandler
 {
 private:
     Engine* engine;
@@ -69,7 +73,7 @@ private:
     Button backButton;
 
 public:
-    Playground(Engine* engine, int colorCount, int columns, int rows, int bubbleSize);
+    Playground(Engine* engine, int colorCount, int columns, int rows, int bubbleSize, int font);
     virtual ~Playground();
     
     void registerColor(int color, int surfaceIndex);
@@ -77,8 +81,8 @@ public:
     void handleClick(int x, int y);
     void oneStepBack();
     
-    void renderFunction();
-    virtual void updateME(MouseEvent mouseEvent);
+    void render();
+    Gamestatus updateME(MouseEvent mouseEvent);
     virtual void updateWE(WindowEvent windowEvent);
     
 private:
